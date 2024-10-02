@@ -82,6 +82,33 @@ paths:
           description: One or all params are missing
       summary: Creates a game
       description: Creates a new game
+    delete:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/delete-game'
+      tags:
+        - delete-game
+      responses:
+        '204':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/delete-game'
+          description: There is no content to return
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+              examples:
+                Game /w+ was not found:
+                  value:
+                    error: Game /w+ was not found to delete
+          description: Game was not found in games array
+      summary: Deletes game
+      description: Deletes an existing game
 components:
   schemas:
     error:
@@ -109,3 +136,15 @@ components:
       example:
         name: Tetris
         price: 0.99
+    delete-game:
+      title: Root Type for delete-game
+      description: ''
+      required:
+        - id
+      type: object
+      properties:
+        id:
+          format: int32
+          type: integer
+      example:
+        id: 1
