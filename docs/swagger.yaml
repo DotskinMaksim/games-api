@@ -23,6 +23,11 @@ paths:
                     - Cyberpunk 2077
       summary: Get a list of all games
       description: Returns a list of all games in API
+    post:
+      tags:
+        - new-game
+      summary: Creates a game
+      description: Creates a new game
   '/games/{id}':
     get:
       tags:
@@ -39,16 +44,6 @@ paths:
                 Full details of a game:
                   value: '    {id: 1, name: "Witcher 3", price: 29.99},'
           description: Returns full details of a given id game
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error'
-              examples:
-                Entity id was not given:
-                  value:
-                    error: Entity id is not given
-          description: Requires the entity id and returns 400 if none is given
         '404':
           content:
             application/json:
@@ -62,6 +57,31 @@ paths:
       operationId: id
       summary: Get full details of a game
       description: Returns full details of a given id game
+    post:
+      requestBody:
+        description: A new game to be created
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/error'
+            examples:
+              Entity id was not given:
+                value:
+                  error: Entity id is not given
+        required: true
+      tags:
+        - new-game
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/new-game'
+          description: Returns created game details
+        '400':
+          description: One or all params are missing
+      summary: Creates a game
+      description: Creates a new game
 components:
   schemas:
     error:
@@ -73,3 +93,19 @@ components:
           type: string
       example:
         error: Error message.
+    new-game:
+      title: Root Type for new-game
+      description: ''
+      required:
+        - price
+        - name
+      type: object
+      properties:
+        name:
+          type: string
+        price:
+          format: float
+          type: number
+      example:
+        name: Tetris
+        price: 0.99
