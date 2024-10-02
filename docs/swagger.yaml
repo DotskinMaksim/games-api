@@ -1,0 +1,75 @@
+openapi: 3.0.2
+info:
+  title: Games-API
+  version: 1.0.0
+  description: '###This is a Swagger Ui for our Games Api###'
+paths:
+  /games:
+    description: ''
+    get:
+      tags:
+        - games
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {}
+              examples:
+                List of games:
+                  value:
+                    - Witcher 3
+                    - Cyberpunk 2077
+      summary: Get a list of all games
+      description: Returns a list of all games in API
+  '/games/{id}':
+    get:
+      tags:
+        - details
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+              examples:
+                Full details of a game:
+                  value: '    {id: 1, name: "Witcher 3", price: 29.99},'
+          description: Returns full details of a given id game
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+              examples:
+                Entity id was not given:
+                  value:
+                    error: Entity id is not given
+          description: Requires the entity id and returns 400 if none is given
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+              examples:
+                Game /w+ was not found:
+                  value:
+                    error: Game \w+ was not found in game array
+          description: Game was not found in games array
+      operationId: id
+      summary: Get full details of a game
+      description: Returns full details of a given id game
+components:
+  schemas:
+    error:
+      title: Root Type for error
+      description: ''
+      type: object
+      properties:
+        error:
+          type: string
+      example:
+        error: Error message.
