@@ -1,119 +1,185 @@
 openapi: 3.0.2
 info:
-  title: Games-API
+  title: Games API
   version: 1.0.0
-  description: '###This is a Swagger Ui for our Games Api###'
+  description: '### This is a Swagger UI for our Games API ###'
 paths:
   /games:
-    description: ''
     get:
       tags:
         - games
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items: {}
-              examples:
-                List of games:
-                  value:
-                    - Witcher 3
-                    - Cyberpunk 2077
       summary: Get a list of all games
-      description: Returns a list of all games in API
-    post:
-      tags:
-        - new-game
-      summary: Creates a game
-      description: Creates a new game
-  '/games/{id}':
-    get:
-      tags:
-        - details
+      description: Returns a list of all games in the API
       responses:
         '200':
+          description: A list of games
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  type: string
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    price:
+                      type: number
+                      format: float
               examples:
-                Full details of a game:
-                  value: '    {id: 1, name: "Witcher 3", price: 29.99},'
-          description: Returns full details of a given id game
-        '404':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error'
-              examples:
-                Game /w+ was not found:
+                List of games:
                   value:
-                    error: Game \w+ was not found in game array
-          description: Game was not found in games array
-      operationId: id
-      summary: Get full details of a game
-      description: Returns full details of a given id game
+                    - id: 1
+                      name: "Witcher 3"
+                      price: 29.99
+                    - id: 2
+                      name: "Cyberpunk 2077"
+                      price: 59.99
     post:
-      requestBody:
-        description: A new game to be created
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/error'
-            examples:
-              Entity id was not given:
-                value:
-                  error: Entity id is not given
-        required: true
       tags:
         - new-game
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/new-game'
-          description: Returns created game details
-        '400':
-          description: One or all params are missing
-      summary: Creates a game
-      description: Creates a new game
-    delete:
+      summary: Creates a new game
+      description: Creates a new game with a name and price
       requestBody:
+        required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/delete-game'
+              type: object
+              required:
+                - name
+                - price
+              properties:
+                name:
+                  type: string
+                price:
+                  type: number
+                  format: float
+            examples:
+              New game:
+                value:
+                  name: "Tetris"
+                  price: 0.99
+      responses:
+        '201':
+          description: Returns created game details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  price:
+                    type: number
+                    format: float
+        '400':
+          description: One or all params are missing
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+              examples:
+                Missing parameters:
+                  value:
+                    error: "One or all params are missing"
+  '/games/{id}':
+    get:
+      tags:
+        - details
+      summary: Get full details of a game
+      description: Returns full details of a given game by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the game to retrieve
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Full details of a game
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  price:
+                    type: number
+                    format: float
+              examples:
+                Full details of a game:
+                  value:
+                    id: 1
+                    name: "Witcher 3"
+                    price: 29.99
+        '404':
+          description: Game was not found in games array
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+              examples:
+                Game not found:
+                  value:
+                    error: "Game not found"
+    delete:
       tags:
         - delete-game
+      summary: Deletes a game
+      description: Deletes an existing game by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the game to delete
+          schema:
+            type: integer
       responses:
         '204':
+          description: Successfully deleted
+        '400':
+          description: Game ID is not provided
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/delete-game'
-          description: There is no content to return
-        '404':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error'
+                type: object
+                properties:
+                  error:
+                    type: string
               examples:
-                Game /w+ was not found:
+                Missing ID:
                   value:
-                    error: Game /w+ was not found to delete
-          description: Game was not found in games array
-      summary: Deletes game
-      description: Deletes an existing game
+                    error: "Game ID is not provided"
+        '404':
+          description: Game was not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+              examples:
+                Game not found:
+                  value:
+                    error: "Game not found"
 components:
   schemas:
     error:
-      title: Root Type for error
-      description: ''
       type: object
       properties:
         error:
@@ -121,30 +187,16 @@ components:
       example:
         error: Error message.
     new-game:
-      title: Root Type for new-game
-      description: ''
-      required:
-        - price
-        - name
       type: object
+      required:
+        - name
+        - price
       properties:
         name:
           type: string
         price:
-          format: float
           type: number
+          format: float
       example:
-        name: Tetris
+        name: "Tetris"
         price: 0.99
-    delete-game:
-      title: Root Type for delete-game
-      description: ''
-      required:
-        - id
-      type: object
-      properties:
-        id:
-          format: int32
-          type: integer
-      example:
-        id: 1
