@@ -19,7 +19,9 @@
   "homepage": "https://github.com/DotskinMaksim/games-api#readme",
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
     "express": "^4.21.0",
+    "mongoose": "^8.7.2",
     "swagger-ui-express": "^5.0.1",
     "yamljs": "^0.3.0"
   }
