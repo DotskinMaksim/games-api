@@ -1,4 +1,4 @@
-# 🎮 Game API
+# 🎮 Games API
 
 This is an API for managing a list of games. It allows you to **create**, **retrieve**, **update**, and **delete** games.
 
