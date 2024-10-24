@@ -61,7 +61,6 @@ app.put('/games/:id', async (req, res) => {
     }
 });
 
-// Создание новой игры
 app.post('/games', async (req, res) => {
     try {
         const lastGame = await Game.findOne().sort({ id: -1 });
